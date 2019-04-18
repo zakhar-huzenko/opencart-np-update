@@ -6,6 +6,9 @@ class ModelLocalisationNpApiAllUpdate extends Model {
 
     public function rebuildDatabase()
     {
+		$query = $this->db->query("ALTER TABLE `" . DB_PREFIX . "zone` ADD `ref` varchar(50) NOT NULL AFTER `status`");
+		$query = $this->db->query("TRUNCATE TABLE `" . DB_PREFIX . "city`");
+		$query = $this->db->query("TRUNCATE TABLE `" . DB_PREFIX . "country`");
         $this->rebuildCountries(); // области
         $this->addZones();  // города
         $this->addCities(); // отделения
@@ -72,7 +75,7 @@ class ModelLocalisationNpApiAllUpdate extends Model {
                 }
             }
             if (strlen($insert) > 0) {
-                $this->db->query("INSERT INTO `" . DB_PREFIX . "zone` (`country_id`, `name`, `code`, `status`) VALUES {$insert}");
+                $this->db->query("INSERT INTO `" . DB_PREFIX . "zone` (`country_id`, `name`, `code`, `status`,`ref`) VALUES {$insert}");
             }
         }
     }
