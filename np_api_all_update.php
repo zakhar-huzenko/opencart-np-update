@@ -6,7 +6,10 @@ class ModelLocalisationNpApiAllUpdate extends Model {
 
     public function rebuildDatabase()
     {
-		$query = $this->db->query("ALTER TABLE `" . DB_PREFIX . "zone` ADD `ref` varchar(50) NOT NULL AFTER `status`");
+		$chkcol = $this->db->query("SHOW COLUMNS FROM `" . DB_PREFIX . "zone` WHERE `Field` = 'ref'");  
+		if($chkcol){
+			$query = $this->db->query("ALTER TABLE `" . DB_PREFIX . "zone` ADD `ref` varchar(50) NOT NULL AFTER `status`");
+		}
 		$query = $this->db->query("TRUNCATE TABLE `" . DB_PREFIX . "city`");
 		$query = $this->db->query("TRUNCATE TABLE `" . DB_PREFIX . "zone`");
         $this->rebuildCountries(); // области
