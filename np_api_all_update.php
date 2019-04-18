@@ -8,7 +8,7 @@ class ModelLocalisationNpApiAllUpdate extends Model {
     {
 		$query = $this->db->query("ALTER TABLE `" . DB_PREFIX . "zone` ADD `ref` varchar(50) NOT NULL AFTER `status`");
 		$query = $this->db->query("TRUNCATE TABLE `" . DB_PREFIX . "city`");
-		$query = $this->db->query("TRUNCATE TABLE `" . DB_PREFIX . "country`");
+		$query = $this->db->query("TRUNCATE TABLE `" . DB_PREFIX . "zone`");
         $this->rebuildCountries(); // области
         $this->addZones();  // города
         $this->addCities(); // отделения
