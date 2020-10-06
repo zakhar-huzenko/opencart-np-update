@@ -1,7 +1,7 @@
 <?php
 class ModelLocalisationCityUpdate extends Model {
 
-    protected static $api_key = 'e597ddbed8329ee367b4e50a24f3f024'; // персональный api key
+    protected static $api_key = '*key*'; // персональный api key
 
     public function rebuildDatabase()
     {
