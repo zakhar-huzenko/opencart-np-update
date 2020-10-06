@@ -1,11 +1,16 @@
 <?php
+class ModelLocalisationCityUpdate extends Model {
 
-class ModelLocalisationNpApiAllUpdate extends Model {
-
-    protected static $api_key = '[KEY]'; // персональный api key
+    protected static $api_key = '*key*'; // персональный api key
 
     public function rebuildDatabase()
     {
+		/*$chkcol = $this->db->query("SHOW COLUMNS FROM `" . DB_PREFIX . "zone` WHERE `Field` = 'ref'");  
+		if($chkcol){
+			$query = $this->db->query("ALTER TABLE `" . DB_PREFIX . "zone` ADD `ref` varchar(50) NOT NULL AFTER `status`");
+		}*/
+		$query = $this->db->query("TRUNCATE TABLE `" . DB_PREFIX . "city`");
+		$query = $this->db->query("TRUNCATE TABLE `" . DB_PREFIX . "zone`");
         $this->rebuildCountries(); // области
         $this->addZones();  // города
         $this->addCities(); // отделения
@@ -34,7 +39,8 @@ class ModelLocalisationNpApiAllUpdate extends Model {
                     continue;
                 }
                 $id = $i+300000; // id как в модуле opencart2x(webmakers)
-                $insert .= "({$id},	'{$areas[$i]['Description']}',	'UA',	'UKR',	'',	0,	1,	'{$areas[$i]['Ref']}')";
+				$country_descr = str_replace("\"","'",$areas[$i]['Description']);
+                $insert .= "({$id},	\"{$country_descr}\",	'UA',	'UKR',	'',	0,	1,	'{$areas[$i]['Ref']}')";
                 if ($i+1 !== $count_areas) {
                     $insert .= ',';
                 }
@@ -66,13 +72,14 @@ class ModelLocalisationNpApiAllUpdate extends Model {
                 }
                 $country = $this->db->query("SELECT `country_id` FROM `" . DB_PREFIX . "country` WHERE `ref` = '{$zones[$i]['Area']}' LIMIT 1");
                 $country_id = (int)$country->row['country_id'];
-                $insert .= "({$country_id}, '{$zones[$i]['DescriptionRu']}',	'{$zones[$i]['CityID']}',	1, '{$zones[$i]['Ref']}')";
+				$zone_descr = str_replace("\"","'",$zones[$i]['DescriptionRu']);
+				$insert .= "({$country_id}, \"{$zone_descr}\",	'{$zones[$i]['CityID']}',	1, '{$zones[$i]['Ref']}')";
                 if ($i+1 !== $count_zones) {
                     $insert .= ',';
                 }
             }
             if (strlen($insert) > 0) {
-                $this->db->query("INSERT INTO `" . DB_PREFIX . "zone` (`country_id`, `name`, `code`, `status`) VALUES {$insert}");
+                $this->db->query("INSERT INTO `" . DB_PREFIX . "zone` (`country_id`, `name`, `code`, `status`,`ref`) VALUES {$insert}");
             }
         }
     }
@@ -97,7 +104,8 @@ class ModelLocalisationNpApiAllUpdate extends Model {
                 }
                 $zone = $this->db->query("SELECT `zone_id` FROM `" . DB_PREFIX . "zone` WHERE `ref` = '{$cities[$i]['CityRef']}' LIMIT 1");
                 $zone_id = (int)$zone->row['zone_id'];
-                $insert .= "({$zone_id}, '{$cities[$i]['DescriptionRu']}',	1,  '{$cities[$i]['SiteKey']}',	1)";
+				$city_descr = str_replace("\"","'",$cities[$i]['DescriptionRu']);
+                $insert .= "({$zone_id}, \"{$city_descr}\",	1,  '{$cities[$i]['SiteKey']}',	1)";
                 if ($i+1 !== $count_cities) {
                     $insert .= ',';
                 }
